@@ -1,1 +1,15 @@
+const express = require('express');
+const path = require('path');
+const app = express();
 
+app.use(express.json());
+app.use(express.static('public'));
+
+// بيانات مؤقتة - الأيام المحجوزة
+let bookings = [];
+let bookedDates = ['2026-05-10', '2026-05-15', '2026-06-01'];
+
+const packages = {
+    economic: { name: 'الباقة الفضية', price: 1200000, desc: 'القاعة الرئيسية + كراسي ملكية + صوت احترافي' },
+    medium: { name: 'الباقة الذهبية', price: 3000000, desc: 'كوشة ملكية + إضاءة ليزر + بوفيه + ضيافة VIP' },
+    vip: { name: 'الباقة الماسية', price: 6000000, desc: '
