@@ -1,88 +1,46 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// مهم جداً: دا السطر البخلي الموقع يظهر
 app.use(express.static('public'));
+app.use(express.json());
 
-// بيانات مؤقتة - بعدين نربطها قاعدة بيانات
 let bookings = [];
-let bookedDates = ['2026-05-10', '2026-05-15', '2026-06-01'];
 
-const packages = {
-    economic: { name: 'الباقة الاقتصادية', price: 1200000, desc: 'الصالة + كراسي + صوت أساسي' },
-    medium: { name: 'الباقة المتوسطة', price: 3000000, desc: 'كوشة + إضاءة + بوفيه + ضيافة' },
-    vip: { name: 'باقة VIP', price: 6000000, desc: 'ديكور كامل + تصوير + زفة + عشاء فاخر' }
-};
-
-const addons = {
-    kosha: { name: 'كوشة وورد طبيعي', price: 400000 },
-    photo: { name: 'تصوير فوتو + فيديو + درون', price: 350000 },
-    buffet: { name: 'بوفيه مفتوح 100 شخص', price: 800000 },
-    zaffa: { name: 'زفة + DJ', price: 250000 },
-    makeup: { name: 'غرفة عروس VIP', price: 200000 }
-};
-
-// API: يجيب الأيام المحجوزة
-app.get('/api/booked-dates', (req, res) => {
-    res.json(bookedDates);
-});
-
-// API: يحسب الفاتورة تلقائي
+// API لحساب السعر
 app.post('/api/calculate', (req, res) => {
     const { packageType, selectedAddons } = req.body;
-    if (!packages[packageType]) return res.status(400).json({ error: 'اختار باقة' });
-
-    let total = packages[packageType].price;
-    let details = [packages[packageType].name + ' - ' + packages[packageType].desc];
-
-    selectedAddons.forEach(addon => {
-        if (addons[addon]) {
-            total += addons[addon].price;
-            details.push(addons[addon].name);
-        }
-    });
-
-    const deposit = total * 0.5;
-    res.json({ total, deposit, details });
-});
-
-// API: يستقبل الحجز الجديد
-app.post('/api/book', (req, res) => {
-    const { date, name, phone, packageType, selectedAddons, total, deposit } = req.body;
-
-    if (!date ||!name ||!phone ||!packageType) {
-        return res.status(400).send('املا كل البيانات المطلوبة');
-    }
-
-    if (bookedDates.includes(date)) {
-        return res.status(400).send('اليوم دا محجوز للأسف، اختار تاريخ تاني');
-    }
-
-    const newBooking = {
-        id: Date.now(),
-        date, name, phone, packageType,
-        selectedAddons, total, deposit,
-        status: 'بانتظار العربون',
-        createdAt: new Date().toISOString()
+    const prices = {
+        packages: { economic: 1200000, medium: 3000000, vip: 6000000 },
+        addons: { kosha: 400000, photo: 350000, buffet: 800000, zaffa: 250000, makeup: 200000 }
     };
 
-    bookings.push(newBooking);
-    bookedDates.push(date);
+    let total = prices.packages[packageType] || 0;
+    let details = [`باقة ${packageType}`];
 
-    console.log('حجز جديد:', newBooking);
-    res.status(201).json({ message: 'تم استلام الحجز بنجاح', bookingId: newBooking.id });
+    selectedAddons.forEach(addon => {
+        total += prices.addons[addon] || 0;
+        details.push(`إضافة ${addon}`);
+    });
+
+    res.json({ total, deposit: total * 0.5, details });
 });
 
-// API: لوحة التحكم - تشوف كل الحجوزات
-app.get('/api/admin/bookings', (req, res) => {
-    res.json(bookings);
+// API للحجز
+app.post('/api/book', (req, res) => {
+    const booking = req.body;
+    if (bookings.some(b => b.date === booking.date)) {
+        return res.status(400).send('التاريخ محجوز');
+    }
+    bookings.push(booking);
+    res.status(200).send('تم الحجز بنجاح');
 });
 
-// صفحة رئيسية
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// API للتواريخ المحجوزة
+app.get('/api/booked-dates', (req, res) => {
+    res.json(bookings.map(b => b.date));
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`نظام الصالة شغال على البورت ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
