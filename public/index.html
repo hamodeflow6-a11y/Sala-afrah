@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قصر النجوم الملكي | للحفلات الأسطورية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
     <style>
         :root {
             --gold: #C9A961;
@@ -19,6 +20,86 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background: var(--royal);
-            background-image:
+            background-image: 
                 radial-gradient(ellipse at top, rgba(201, 169, 97, 0.15), transparent 50%),
-                radial-gradient(ellipse at bottom, rgba(155, 44, 44
+                radial-gradient(ellipse at bottom, rgba(155, 44, 44, 0.1), transparent 50%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--royal-light), var(--royal));
+            border-bottom: 3px solid var(--gold);
+            box-shadow: 0 10px 50px rgba(201, 169, 97, 0.2);
+        }
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(201, 169, 97, 0.5);
+            margin-bottom: 10px;
+        }
+        .header p { font-size: 1.3rem; color: var(--gold-light); }
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .glass-card h2 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+        label { display: block; color: var(--gold-light); margin: 15px 0 8px; font-weight: 700; }
+        input, select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .package-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .package-card {
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(201, 169, 97, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .package-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .package-card.selected {
+            border-color: var(--gold);
+            background: rgba(201, 169, 97, 0.1);
+            box-shadow: 0 0 30px rgba(201, 169, 97, 0.3);
+        }
+        .package-card h3 { color: var(--gold); font-size: 1.5rem; margin-bottom: 10px; }
+        .package-card .price { font-size: 1.8rem; font-weight: 900; color: white; }
+        .addons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap
