@@ -1,15 +1,24 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-
-app.use(express.json());
-app.use(express.static('public'));
-
-// بيانات مؤقتة - الأيام المحجوزة
-let bookings = [];
-let bookedDates = ['2026-05-10', '2026-05-15', '2026-06-01'];
-
-const packages = {
-    economic: { name: 'الباقة الفضية', price: 1200000, desc: 'القاعة الرئيسية + كراسي ملكية + صوت احترافي' },
-    medium: { name: 'الباقة الذهبية', price: 3000000, desc: 'كوشة ملكية + إضاءة ليزر + بوفيه + ضيافة VIP' },
-    vip: { name: 'الباقة الماسية', price: 6000000, desc: '
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قصر النجوم الملكي | للحفلات الأسطورية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --gold: #C9A961;
+            --gold-light: #E6D7A3;
+            --royal: #1A0B2E;
+            --royal-light: #2D1B4E;
+            --crimson: #9B2C2C;
+            --glass: rgba(26, 11, 46, 0.6);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--royal);
+            background-image:
+                radial-gradient(ellipse at top, rgba(201, 169, 97, 0.15), transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(155, 44, 44
