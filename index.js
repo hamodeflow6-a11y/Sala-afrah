@@ -1,46 +1,82 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
-// مهم جداً: دا السطر البخلي الموقع يظهر
-app.use(express.static('public'));
 app.use(express.json());
+
+// السطر دا أهم سطر - بيخلي السيرفر يعرض مجلد public
+app.use(express.static(path.join(__dirname, 'public')));
 
 let bookings = [];
 
-// API لحساب السعر
+// API حساب السعر
 app.post('/api/calculate', (req, res) => {
     const { packageType, selectedAddons } = req.body;
+
     const prices = {
-        packages: { economic: 1200000, medium: 3000000, vip: 6000000 },
-        addons: { kosha: 400000, photo: 350000, buffet: 800000, zaffa: 250000, makeup: 200000 }
+        economic: 1200000,
+        medium: 3000000,
+        vip: 6000000
     };
 
-    let total = prices.packages[packageType] || 0;
-    let details = [`باقة ${packageType}`];
+    const addonsPrices = {
+        kosha: 400000,
+        photo: 350000,
+        buffet: 800000,
+        zaffa: 250000,
+        makeup: 200000
+    };
+
+    const names = {
+        economic: 'الباقة الفضية',
+        medium: 'الباقة الذهبية',
+        vip: 'الباقة الماسية',
+        kosha: 'كوشة ورد طبيعي',
+        photo: 'تصوير + درون',
+        buffet: 'بوفيه ملكي',
+        zaffa: 'زفة + DJ',
+        makeup: 'جناح العروس الملكي'
+    };
+
+    let total = prices[packageType] || 0;
+    let details = [names[packageType]];
 
     selectedAddons.forEach(addon => {
-        total += prices.addons[addon] || 0;
-        details.push(`إضافة ${addon}`);
+        total += addonsPrices[addon] || 0;
+        details.push(names[addon]);
     });
 
-    res.json({ total, deposit: total * 0.5, details });
+    res.json({
+        total,
+        deposit: total * 0.5,
+        details
+    });
 });
 
-// API للحجز
+// API الحجز
 app.post('/api/book', (req, res) => {
-    const booking = req.body;
-    if (bookings.some(b => b.date === booking.date)) {
-        return res.status(400).send('التاريخ محجوز');
+    const { date, name, phone, packageType, selectedAddons, total, deposit } = req.body;
+
+    if (bookings.find(b => b.date === date)) {
+        return res.status(400).send('التاريخ محجوز مسبقاً');
     }
-    bookings.push(booking);
-    res.status(200).send('تم الحجز بنجاح');
+
+    bookings.push({ date, name, phone, packageType, selectedAddons, total, deposit });
+    console.log('حجز جديد:', name, date);
+    res.send('تم الحجز بنجاح');
 });
 
-// API للتواريخ المحجوزة
+// API التواريخ المحجوزة
 app.get('/api/booked-dates', (req, res) => {
     res.json(bookings.map(b => b.date));
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// مهم جداً: دا بيخلي أي رابط يفتح index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+    console.log(`القصر الملكي شغال على البورت ${PORT}`);
+});
